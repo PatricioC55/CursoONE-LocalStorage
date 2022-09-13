@@ -1,25 +1,48 @@
 import generateCheckIcon from "./generateCheckIcon.js";
 import generateTrashIcon from "./generateTrashIcon.js";
 
-export const addTask = e => {
-  const cardList = document.querySelector( '[data-list]' );
-  cardList.appendChild( newTask(e) );
+export function superToggle( object, classes = [] ){
+  if ( Array.isArray( classes ) ) {
+
+    classes.forEach( classItem => {
+      object.classList.toggle( classItem );
+    });
+
+  } else {
+    console.error("Invalid parameters");
+  }
 }
 
-const newTask = e => {
-
+export const addTask = e => {
   e.preventDefault();
-  const taskList = JSON.parse( localStorage.getItem( 'tasks' ) ) || [];
 
   const input = document.querySelector( '[data-form-input]' );
+  const inputDate = document.querySelector( '[data-form-date]' );
+
   const inputValue = input.value;
+  const dateText = moment( inputDate.value ).format( 'DD/MM/YYYY' ); 
+
+  const data = {
+    inputValue,
+    dateText
+  }
+
+  const taskList = JSON.parse(localStorage.getItem( 'tasks' )) || [];
+  taskList.push( data );
+  localStorage.setItem( 'tasks', JSON.stringify( taskList ) );
+
+  const cardList = document.querySelector( '[data-list]' );
+  cardList.appendChild( newTask( data ) );
+
+  input.value = '';
+  inputDate.value = '';
+}
+
+export const newTask = ( { inputValue, dateText } ) => {
 
   const divList = document.createElement( 'DIV' );
   divList.appendChild( generateCheckIcon() );
   divList.appendChild( generateSpanTask( inputValue ) );
-
-  const inputDate = document.querySelector( '[data-form-date]' );
-  const dateText = moment( inputDate.value ).format( 'DD/MM/YYYY' );
 
   const card = document.createElement( 'LI' );
   card.classList.add( 'card' );
@@ -27,14 +50,6 @@ const newTask = e => {
   card.appendChild( dateProcess( dateText ) );
   card.appendChild( generateTrashIcon() );
     
-  const data = {
-    inputValue,
-    dateText
-  }
-  taskList.push( data );
-
-  localStorage.setItem( 'tasks', JSON.stringify( taskList ) );
-  input.value = '';
   return card;
 } 
 
@@ -49,16 +64,4 @@ const dateProcess = ( dateText = '' ) => {
   const spanDate = document.createElement( 'SPAN' );
   spanDate.textContent = dateText;
   return spanDate;
-}
-
-export function superToggle( object, classes = [] ){
-  if ( Array.isArray( classes ) ) {
-
-    classes.forEach( classItem => {
-      object.classList.toggle( classItem );
-    });
-
-  } else {
-    console.error("Invalid parameters");
-  }
 }
