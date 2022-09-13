@@ -24,3 +24,4 @@ const newTask = e => {
 } 
 
 btn.addEventListener('click', newTask );
+
