@@ -1,5 +1,8 @@
 import generateCheckIcon from "./generateCheckIcon.js";
 import generateTrashIcon from "./generateTrashIcon.js";
+//import dateSectionElement from "./dateSectionElement.js";
+//import { uniqueDates } from "../services/date.js";
+import { readTasks } from '../components/readTasks.js';
 
 export function superToggle( object, classes = [] ){
   if ( Array.isArray( classes ) ) {
@@ -22,6 +25,10 @@ export const addTask = e => {
   const inputValue = input.value;
   const dateText = moment( inputDate.value ).format( 'DD/MM/YYYY' ); 
 
+  if ( inputValue == '' || dateText == '' ) {
+    return;
+  }
+
   const data = {
     inputValue,
     dateText
@@ -32,7 +39,12 @@ export const addTask = e => {
   localStorage.setItem( 'tasks', JSON.stringify( taskList ) );
 
   const cardList = document.querySelector( '[data-list]' );
-  cardList.appendChild( newTask( data ) );
+  //cardList.appendChild( dateSectionElement(data.dateText) );
+  //cardList.appendChild( newTask( data ) );
+
+  //uniqueDates( taskList );
+  cardList.innerHTML = '';
+  readTasks();
 
   input.value = '';
   inputDate.value = '';
