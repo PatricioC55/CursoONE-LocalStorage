@@ -1,3 +1,5 @@
+import { superToggle } from './addTask.js';
+
 const completeTask = e => {
   const element = e.target;
   superToggle( element, [ 'far', 'fas', 'completeIcon' ] );
