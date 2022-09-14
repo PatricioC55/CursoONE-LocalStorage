@@ -1,11 +1,12 @@
 import { newTask } from './addTask.js';
 import dateSectionElement from "./dateSectionElement.js";
-import { uniqueDates } from "../services/date.js";
+import { uniqueDates, orderDates } from "../services/date.js";
 
 export const readTasks = () => {
   const cardList = document.querySelector( '[data-list]' );
   const taskList = JSON.parse(localStorage.getItem( 'tasks' )) || [];
   const dates = uniqueDates( taskList );
+  orderDates(dates);
 
   dates.forEach( date => {
     cardList.appendChild( dateSectionElement( date ) );

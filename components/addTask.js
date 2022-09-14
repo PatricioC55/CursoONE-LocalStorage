@@ -1,8 +1,7 @@
 import generateCheckIcon from "./generateCheckIcon.js";
 import generateTrashIcon from "./generateTrashIcon.js";
-//import dateSectionElement from "./dateSectionElement.js";
-//import { uniqueDates } from "../services/date.js";
 import { readTasks } from '../components/readTasks.js';
+import { uniqueDates } from "../services/date.js";
 
 export function superToggle( object, classes = [] ){
   if ( Array.isArray( classes ) ) {
@@ -25,13 +24,17 @@ export const addTask = e => {
   const inputValue = input.value;
   const dateText = moment( inputDate.value ).format( 'DD/MM/YYYY' ); 
 
-  if ( inputValue == '' || dateText == '' ) {
-    return;
+  if ( inputValue == '' || inputDate.value == '') {
+    return
   }
+
+  const complete = false;
 
   const data = {
     inputValue,
-    dateText
+    dateText,
+    complete,
+    id: uuid.v4()
   }
 
   const taskList = JSON.parse(localStorage.getItem( 'tasks' )) || [];
@@ -39,10 +42,6 @@ export const addTask = e => {
   localStorage.setItem( 'tasks', JSON.stringify( taskList ) );
 
   const cardList = document.querySelector( '[data-list]' );
-  //cardList.appendChild( dateSectionElement(data.dateText) );
-  //cardList.appendChild( newTask( data ) );
-
-  //uniqueDates( taskList );
   cardList.innerHTML = '';
   readTasks();
 
@@ -50,17 +49,17 @@ export const addTask = e => {
   inputDate.value = '';
 }
 
-export const newTask = ( { inputValue, dateText } ) => {
+export const newTask = ( { inputValue, dateText, complete, id } ) => {
 
   const divList = document.createElement( 'DIV' );
-  divList.appendChild( generateCheckIcon() );
+  divList.appendChild( generateCheckIcon( id, complete ) );
   divList.appendChild( generateSpanTask( inputValue ) );
 
   const card = document.createElement( 'LI' );
   card.classList.add( 'card' );
   card.appendChild( divList );
   card.appendChild( dateProcess( dateText ) );
-  card.appendChild( generateTrashIcon() );
+  card.appendChild( generateTrashIcon( id ) );
     
   return card;
 } 
